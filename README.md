@@ -23,14 +23,24 @@ To control the resistance that the RDKR measures with its fresh air thermistor p
 #### Build
 A 3d model of the [feedback vactrol](https://cad.onshape.com/documents/d5db8724f7444de833602895/w/5097aa9532875356a5bfe0b9/e/74707de9a877e431fe2569b8?renderMode=0&uiState=66673e9433603938000e96be) can be found on my Onshape and downloaded for printing. I currently do not have the exact component list of what LED and what LSRs that I use, as these are components that I had at hand. If you copy this build, please comment what components that worked for you to make it more reproducible. 
 
+|![Vactrol before lightprotection](resources\vactrol_uninsulated.jpg) | ![Vactrol covered in electrical tape](resources\vactrol_onboard.jpg) |
+|------------------------|------------------------|
+
+
 #### Calibration
 No LSR is exacly the same, and the light that hits them from the LED is not uniform. To deal with this, we perform a calibration by sweeping through all LED intensities (PWM) and meassureing the resistance (Ohm) of the LSRs at each intencity. The PWM <-> Ohm relationship is not linear, however, the log(PWM) <-> log(Ohm) is perfectly linear allowing us to perform a linear regression. The slope and intercept coeficients can be used to describe the LSRs very precicly, and hence we can calculate what resistance the feedback LSR should have to produce the correct resistance of the output LSR. This is all done by the ESP32 during setup.
 
 ### Measuring resistance
 We would like to provide the correct resistance to the RDKR most of the time, and to do this we will have to measure the resistance of the fresh air thermistor. One resistance measuring unit use one of the ADC pins and a voltage divider with a reference resistor of 1kOhm. Since we have to calibrate the feedback vactrol, the controller have two resitance measuring units.
 
-## Circuit (TODO)
-Here is the full circuit diagram with components. 
+## Circuit
+This is the circuit diagram, and the open source easyeda project can be found [here](https://oshwlab.com/jetjakobsson/rdkr-controller) if you need to modify it to fit with your components.
+![circuit diagram](resources\Schematic_RDKR-controller_2024-11-18.svg)
+
+![PCB from gerber file](resources\PCB.png)
+
+Use the gerber file under resources to order your own PCBs.
+
 
 ## Usage
 ### Setup
@@ -46,7 +56,5 @@ Here is the full circuit diagram with components.
 ### data access
 All sensors are acceable as MQTT sensors and can be incorporated in home assistant or other MQTT systems. This is the recomended way to log the reading, as the microcontroller does not have much memory.
 
-#### MQTT topics
-* fresh air sensor: 
-* etc. etc.
+
 
