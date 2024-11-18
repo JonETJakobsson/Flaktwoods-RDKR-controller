@@ -23,7 +23,7 @@ To control the resistance that the RDKR measures with its fresh air thermistor p
 #### Build
 A 3d model of the [feedback vactrol](https://cad.onshape.com/documents/d5db8724f7444de833602895/w/5097aa9532875356a5bfe0b9/e/74707de9a877e431fe2569b8?renderMode=0&uiState=66673e9433603938000e96be) can be found on my Onshape and downloaded for printing. I currently do not have the exact component list of what LED and what LSRs that I use, as these are components that I had at hand. If you copy this build, please comment what components that worked for you to make it more reproducible. 
 
-|![Vactrol before lightprotection](resources\vactrol_uninsulated.jpg) | ![Vactrol covered in electrical tape](resources\vactrol_onboard.jpg) |
+|![Vactrol before lightprotection](resources/vactrol_uninsulated.jpg) | ![Vactrol covered in electrical tape](resources/vactrol_onboard.jpg) |
 |------------------------|------------------------|
 
 
@@ -35,9 +35,9 @@ We would like to provide the correct resistance to the RDKR most of the time, an
 
 ## Circuit
 This is the circuit diagram, and the open source easyeda project can be found [here](https://oshwlab.com/jetjakobsson/rdkr-controller) if you need to modify it to fit with your components.
-![circuit diagram](resources\Schematic_RDKR-controller_2024-11-18.svg)
+![circuit diagram](resources/Schematic_RDKR-controller_2024-11-18.svg)
 
-![PCB from gerber file](resources\PCB.png)
+![PCB from gerber file](resources/PCB.png)
 
 Use the gerber file under resources to order your own PCBs.
 
