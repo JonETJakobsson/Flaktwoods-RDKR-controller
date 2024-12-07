@@ -121,7 +121,7 @@ def setup_mqtt(username: str, password: str, configuration_url: str) -> EntityGr
     serial_number = str(binascii.hexlify(unique_id()), "utf-8")
     client_id = "RDKR_" + serial_number[-5:]
 
-    mqtt = MQTTClient(bytes(client_id, "utf-8"), "192.168.68.94", user=username, password=password, keepalive=600)
+    mqtt = MQTTClient(bytes(client_id, "utf-8"), "homeassistant.local", user=username, password=password, keepalive=600)
 
     print(f"connecting to mqtt with client id {client_id}")
     mqtt.connect()
