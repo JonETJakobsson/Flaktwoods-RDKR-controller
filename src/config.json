@@ -1,6 +1,8 @@
 {
     "ssid": "wifi_name",
     "password": "wifi_password",
+    "mqtt_user": "mqtt_user",
+    "mqtt_password": "mqtt_password",
     "k1": 0,
     "m1": 0,
     "k2": 0,
