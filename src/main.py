@@ -39,11 +39,6 @@ rdkr = Rdkr(vac, T0, R0, TCR, Pin(25), Pin(26), Pin(27), Pin(15))
 # start with rotor off
 rdkr.rotor_off()
 
-print(wlan.ifconfig()) # variable from boot.py
-configuration_url = wlan.ifconfig()[0]
-group = setup_mqtt(mqtt_user, mqtt_password, f"http://{configuration_url}:8266")
-
-
 
 def calculate_dew_point(T, H):
     """
@@ -59,7 +54,7 @@ def calculate_dew_point(T, H):
 def main():
     while True:
         # Attempt to connect with a timeout if wifi is lost
-        timeout_seconds = 5
+        timeout_seconds = 30
         start_time = time.time()
         while not wlan.isconnected() and time.time() - start_time < timeout_seconds:
             try:
@@ -69,12 +64,11 @@ def main():
 
         if wlan.isconnected():
             print("Wi-Fi connected:", wlan.ifconfig()[0])
+            webrepl.start()
         else:
             print("Wi-Fi connection failed within the timeout.")
-            return
 
         # Reconnect strategy for MQTT setup
-        
         if not group.is_connected:
             try:
                 configuration_url = wlan.ifconfig()[0]

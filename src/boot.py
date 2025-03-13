@@ -19,19 +19,5 @@ wlan = network.WLAN(network.STA_IF)
 wlan.active(False)
 wlan.active(True)
 
-# Attempt to connect with a timeout
-timeout_seconds = 30
-start_time = time.time()
-while not wlan.isconnected() and time.time() - start_time < timeout_seconds:
-    try:
-        wlan.connect(ssid, password)
-    except: "trying again"
-    time.sleep(1)  # Wait for connection
-
-if wlan.isconnected():
-    print("Wi-Fi connected:", wlan.ifconfig()[0])
-    webrepl.start()
-else:
-    print("Wi-Fi connection failed within the timeout.")
 
 # Add your application-specific logic in main.py
