@@ -7,6 +7,7 @@ from vactrol import dualVactrol
 from rdkr import Rdkr
 import json
 from ha_mqtt import setup_mqtt
+import time
 
 # Configuration
 # Set aim temperature to match the
@@ -31,21 +32,16 @@ R0 = 10000 # 10kOhms at 22 C
 TCR = -750 #Ohms/C
 #-----------------------------------------------------
 
-
-print(wlan.ifconfig()) # variable from boot.py
-configuration_url = wlan.ifconfig()[0]
-
-
-group = setup_mqtt("mqtt_username", "mqtt_password", f"http://{configuration_url}:8266")
-
-
 # create a vactrol object
 vac = dualVactrol(Pin(21), Pin(32), Pin(33), 17)
 # create the rdkr object
 rdkr = Rdkr(vac, T0, R0, TCR, Pin(25), Pin(26), Pin(27), Pin(15))
-
 # start with rotor off
 rdkr.rotor_off()
+
+print(wlan.ifconfig()) # variable from boot.py
+configuration_url = wlan.ifconfig()[0]
+group = setup_mqtt(mqtt_user, mqtt_password, f"http://{configuration_url}:8266")
 
 
 
@@ -60,21 +56,32 @@ def calculate_dew_point(T, H):
     
     return dew_point
 
-
-
-
- 
 def main():
     while True:
         # Attempt to connect with a timeout if wifi is lost
-        timeout_seconds = 30
+        timeout_seconds = 5
         start_time = time.time()
         while not wlan.isconnected() and time.time() - start_time < timeout_seconds:
             try:
                 wlan.connect(ssid, password)
             except: "trying again"
             time.sleep(1)  # Wait for connection
+
+        if wlan.isconnected():
+            print("Wi-Fi connected:", wlan.ifconfig()[0])
+        else:
+            print("Wi-Fi connection failed within the timeout.")
+            return
+
+        # Reconnect strategy for MQTT setup
         
+        if not group.is_connected:
+            try:
+                configuration_url = wlan.ifconfig()[0]
+                group = setup_mqtt(mqtt_user, mqtt_password, f"http://{configuration_url}:8266")
+            except Exception as e:
+                print(f"Failed to connect to MQTT: {e}.")
+
         # Load all sensors
         rdkr.read_sensors()
         s = rdkr.extract_sensor_values()       
@@ -153,6 +160,5 @@ def main():
         print(payload)
         group.publish_state(payload)
         time.sleep(120)
-
 
 main()

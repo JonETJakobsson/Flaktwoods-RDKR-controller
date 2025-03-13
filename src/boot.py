@@ -9,6 +9,8 @@ try:
         config = json.load(config_file)
         ssid = config.get('ssid')
         password = config.get('password')
+        mqtt_user = config.get('mqtt_user')
+        mqtt_password = config.get('mqtt_password')
 except OSError as e:
     print(f"Could not find config.json: {e}")
     

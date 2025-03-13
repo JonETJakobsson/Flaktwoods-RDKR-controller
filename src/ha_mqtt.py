@@ -124,8 +124,14 @@ def setup_mqtt(username: str, password: str, configuration_url: str) -> EntityGr
     mqtt = MQTTClient(bytes(client_id, "utf-8"), "homeassistant.local", user=username, password=password, keepalive=600)
 
     print(f"connecting to mqtt with client id {client_id}")
-    mqtt.connect()
-    print("connection successful")
+    try:
+        mqtt.connect()
+        mqtt.is_connected = True
+        print("connection successful")
+    except Exception as e:
+        mqtt.is_connected = False
+        print(f"Failed to connect to MQTT: {e}")
+    
 
     device_config = dict(
         identifiers = [client_id],
