@@ -17,17 +17,16 @@ class MQTTClient(mqtt_simple.MQTTClient):
                 print("mqtt: %r" % e)
 
     def reconnect(self):
-        i = 0
-        while 1:
-            try:
-                return super().connect(False)
-            except OSError as e:
-                self.log(True, e)
-                i += 1
-                self.delay(i)
+        # try to reconnect 1 time
+        try:
+            return super().connect(False)
+        except OSError as e:
+            self.log(True, e)
+            self.delay(1)
 
     def publish(self, topic, msg, retain=False, qos=0):
-        while 1:
+        # try to publish 2 times
+        for i in range(2):
             try:
                 return super().publish(topic, msg, retain, qos)
             except OSError as e:

@@ -21,7 +21,7 @@ DEW_POINT_MARGIN = 1
 # heating/cooling cost similar to rotor energy draw (14watts)
 # 14 watts can heat 50l/s air aproximaty 0.875C
 # If you use a heatpump with high efficiency, you can increase the relax temp 3-5x
-RELAXING_TEMP = 0.87
+RELAXING_TEMP = 0.87 * 3
 
 
 
@@ -38,7 +38,6 @@ vac = dualVactrol(Pin(21), Pin(32), Pin(33), 17)
 rdkr = Rdkr(vac, T0, R0, TCR, Pin(25), Pin(26), Pin(27), Pin(15))
 # start with rotor off
 rdkr.rotor_off()
-
 
 def calculate_dew_point(T, H):
     """
@@ -59,6 +58,10 @@ def main():
         while not wlan.isconnected() and time.time() - start_time < timeout_seconds:
             try:
                 wlan.connect(ssid, password)
+                # Connect to MQTT
+                configuration_url = wlan.ifconfig()[0]
+                group = setup_mqtt(mqtt_user, mqtt_password, f"http://{configuration_url}:8266")
+
             except: "trying again"
             time.sleep(1)  # Wait for connection
 
@@ -66,15 +69,11 @@ def main():
             print("Wi-Fi connected:", wlan.ifconfig()[0])
             webrepl.start()
         else:
-            print("Wi-Fi connection failed within the timeout.")
+            # Create MQTT group with a configuration URL (it will reconnect automatically)
+            configuration_url = wlan.ifconfig()[0]
+            group = setup_mqtt(mqtt_user, mqtt_password, f"http://{configuration_url}:8266")
 
-        # Reconnect strategy for MQTT setup
-        if not group.is_connected:
-            try:
-                configuration_url = wlan.ifconfig()[0]
-                group = setup_mqtt(mqtt_user, mqtt_password, f"http://{configuration_url}:8266")
-            except Exception as e:
-                print(f"Failed to connect to MQTT: {e}.")
+            print("Wi-Fi connection failed within the timeout.")
 
         # Load all sensors
         rdkr.read_sensors()
@@ -153,6 +152,8 @@ def main():
         payload.update(extra_payload)
         print(payload)
         group.publish_state(payload)
+        
+        # Sleep for 2 minutes
         time.sleep(120)
 
 main()

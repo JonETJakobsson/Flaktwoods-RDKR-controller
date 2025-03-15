@@ -126,10 +126,8 @@ def setup_mqtt(username: str, password: str, configuration_url: str) -> EntityGr
     print(f"connecting to mqtt with client id {client_id}")
     try:
         mqtt.connect()
-        mqtt.is_connected = True
         print("connection successful")
     except Exception as e:
-        mqtt.is_connected = False
         print(f"Failed to connect to MQTT: {e}")
     
 
