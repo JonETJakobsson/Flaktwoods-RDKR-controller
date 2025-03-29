@@ -35,7 +35,7 @@ TCR = -750 #Ohms/C
 # create a vactrol object
 vac = dualVactrol(Pin(21), Pin(32), Pin(33), 17)
 # create the rdkr object
-rdkr = Rdkr(vac, T0, R0, TCR, Pin(25), Pin(26), Pin(27), Pin(15))
+rdkr = Rdkr(vac, T0, R0, TCR, Pin(15), Pin(27), Pin(26), Pin(25))
 # start with rotor off
 rdkr.rotor_off()
 
